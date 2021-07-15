@@ -51,7 +51,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: 'src/dist/shopping-cart'
+    SourceFolder: 'dist/shopping-cart'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
