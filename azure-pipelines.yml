@@ -19,6 +19,7 @@ steps:
     command: 'custom'
     workingDir: 'src'
     customCommand: 'run test --no-watch --no-progress --browsers=ChromeHeadlessCI'
+  enabled: false
 
 - task: CmdLine@2
   displayName: 'Find path of Test result file'
@@ -29,6 +30,7 @@ steps:
       cd $(System.DefaultWorkingDirectory)/src/junit
       echo "ls $(System.DefaultWorkingDirectory)/src/junit"
       ls
+  enabled: false
 
 - task: PublishTestResults@2
   displayName: 'Publish Angular Test Results'
