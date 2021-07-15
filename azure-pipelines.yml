@@ -41,22 +41,23 @@ steps:
     testRunTitle: 'Angular'
   enabled: false
 
-# - task: SonarCloudPrepare@1
-#   inputs:
-#     SonarCloud: 'sonar-cloud'
-#     organization: 'changdinh'
-#     scannerMode: 'CLI'
-#     configMode: 'manual'
-#     cliProjectKey: 'changdinh_shopping-cart'
-#     cliProjectName: 'shopping-cart'
-#     cliSources: '.'
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'sonar-cloud'
     organization: 'changdinh'
-    scannerMode: 'MSBuild'
-    projectKey: 'changdinh_shopping-cart'
-    projectName: 'shopping-cart'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'changdinh_shopping-cart'
+    cliProjectName: 'shopping-cart'
+    cliSources: '.'
+    
+# - task: SonarCloudPrepare@1
+#   inputs:
+#     SonarCloud: 'sonar-cloud'
+#     organization: 'changdinh'
+#     scannerMode: 'MSBuild'
+#     projectKey: 'changdinh_shopping-cart'
+#     projectName: 'shopping-cart'
 
 - task: Npm@1
   displayName: 'npm run build'
