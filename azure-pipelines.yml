@@ -11,9 +11,7 @@ steps:
   displayName: 'npm install'
   inputs:
     command: 'install'
-    workingDir: 'shopping-cart'
-
-
+    workingDir: 'src'
 
 - task: Npm@1
   displayName: 'npm run test'
