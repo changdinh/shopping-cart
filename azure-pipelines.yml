@@ -1,22 +1,71 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+trigger: none
 
-trigger:
-- master
+# no PR triggers
+pr: none
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
+- task: Npm@1
+  displayName: 'npm install'
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    command: 'install'
+    workingDir: 'shopping-cart'
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
+
+
+- task: Npm@1
+  displayName: 'npm run test'
+  inputs:
+    command: 'custom'
+    workingDir: 'shopping-cart'
+    customCommand: 'run test --no-watch --no-progress --browsers=ChromeHeadlessCI'
+
+- task: CmdLine@2
+  displayName: 'Find path of Test result file'
+  inputs:
+    script: |
+      find -type f -name *.xml
+      echo "cd $(System.DefaultWorkingDirectory)/shopping-cart/junit"
+      cd $(System.DefaultWorkingDirectory)/shopping-cart/junit
+      echo "ls $(System.DefaultWorkingDirectory)/shopping-cart/junit"
+      ls
+
+- task: PublishTestResults@2
+  displayName: 'Publish Angular Test Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'TESTS-*.xml'
+    searchFolder: $(System.DefaultWorkingDirectory)/shopping-cart/junit
+    testRunTitle: 'Angular'
+  enabled: false
+
+- task: Npm@1
+  displayName: 'npm run build'
+  inputs:
+    command: 'custom'
+    workingDir: 'shopping-cart'
+    customCommand: 'run build'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: 'shopping-cart/dist/shopping-cart'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+- task: Docker@2
+  displayName: Build and push an image to container registry
+  inputs:
+    containerRegistry: 'dmacroperationglobaldev'
+    repository: 'poc3'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+  enabled: false
