@@ -41,12 +41,28 @@ steps:
     testRunTitle: 'Angular'
   enabled: false
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonar-cloud'
+    organization: 'changdinh'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'changdinh_shopping-cart'
+    cliProjectName: 'shopping-cart'
+    cliSources: '.'
+
 - task: Npm@1
   displayName: 'npm run build'
   inputs:
     command: 'custom'
     workingDir: 'src'
     customCommand: 'run build'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
