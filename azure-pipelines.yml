@@ -17,7 +17,7 @@ steps:
   displayName: 'npm run test'
   inputs:
     command: 'custom'
-    workingDir: 'shopping-cart'
+    workingDir: 'src'
     customCommand: 'run test --no-watch --no-progress --browsers=ChromeHeadlessCI'
 
 - task: CmdLine@2
@@ -25,9 +25,9 @@ steps:
   inputs:
     script: |
       find -type f -name *.xml
-      echo "cd $(System.DefaultWorkingDirectory)/shopping-cart/junit"
-      cd $(System.DefaultWorkingDirectory)/shopping-cart/junit
-      echo "ls $(System.DefaultWorkingDirectory)/shopping-cart/junit"
+      echo "cd $(System.DefaultWorkingDirectory)/src/junit"
+      cd $(System.DefaultWorkingDirectory)/src/junit
+      echo "ls $(System.DefaultWorkingDirectory)/src/junit"
       ls
 
 - task: PublishTestResults@2
@@ -35,7 +35,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: 'TESTS-*.xml'
-    searchFolder: $(System.DefaultWorkingDirectory)/shopping-cart/junit
+    searchFolder: $(System.DefaultWorkingDirectory)/src/junit
     testRunTitle: 'Angular'
   enabled: false
 
@@ -43,13 +43,13 @@ steps:
   displayName: 'npm run build'
   inputs:
     command: 'custom'
-    workingDir: 'shopping-cart'
+    workingDir: 'src'
     customCommand: 'run build'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: 'shopping-cart/dist/shopping-cart'
+    SourceFolder: 'src/dist/shopping-cart'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
